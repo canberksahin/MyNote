@@ -12,7 +12,14 @@ namespace MyNote.API
     {
         public static void Register(HttpConfiguration config)
         {
+            // https://stackoverflow.com/questions/7397207/json-net-error-self-referencing-loop-detected-for-type
+
             // Web API configuration and services
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
+
+            config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling
+                = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
             // Configure Web API to use only bearer token authentication.
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
