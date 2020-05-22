@@ -1,2 +1,24 @@
 ﻿body {
 }
+
+.message {
+    display: none;
+}
+
+.message ul {
+    margin-bottom: 0;
+}
+
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    z-index:5;
+}
+
+    .loading > div {
+        margin: auto;
+    }
