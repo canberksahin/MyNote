@@ -1,4 +1,11 @@
 ﻿body {
+    padding-top:56px;
+}
+
+.page {
+    display:none;
+    height:100%;
+
 }
 
 .message {

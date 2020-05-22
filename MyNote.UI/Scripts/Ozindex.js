@@ -3,6 +3,18 @@ var apiUrl = "https://localhost:44305/";
 
 //FUNCTİONS
 
+function isLoggedIn() {
+    // todo: sessionstorage ve localstorage da tutulan login bilgilerine bakarak
+    // login olup olmadığına karar ver ve eğer logins uygulamayı aç
+    // login değilse login/register sayfasını göster
+}
+
+function loginData() {
+    // todo: sessionstorage da, eğer orada bulamadıysan
+    // localstorage da kayıtlı login data yı json'dan object'e dönüştür ve yolla
+    // eğer yoksa null yolla
+}
+
 function success(message) {
     $(".tab-pane.active .message")
         .removeClass("alert-danger")
@@ -104,4 +116,12 @@ $('#login a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
     // e.relatedTarget // previous active tab
 
     resetLoginForms();
+});
+
+$(".navbar-login a").click(function () {
+    var href = $(this).attr("href");
+
+    //https://getbootstrap.com/docs/4.0/components/navs/#via-javascript
+    $('#pills-tab a[href="'+href+'"]').tab('show') // Select tab by name
+
 });
