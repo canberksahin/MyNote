@@ -3,16 +3,57 @@ var apiUrl = "https://localhost:44305/";
 
 //FUNCTİONS
 
-function isLoggedIn() {
+function checkLogin() {
     // todo: sessionstorage ve localstorage da tutulan login bilgilerine bakarak
     // login olup olmadığına karar ver ve eğer logins uygulamayı aç
     // login değilse login/register sayfasını göster
+    var loginData = getLoginData();
+
+    if (loginData == null || !loginData.access_token) {
+        showLoginPage();
+        return;
+    }
+    //token'ı geçerli mi?
+    $.ajax({
+        url: apiUrl + "api/Account/UserInfo",
+        type: "Get",
+        headers: { Authorization: "Bearer "+ loginData.access_token },
+        success: function (data) {
+            console.log(data);
+            //showAppPage();
+        },
+        error: function () {
+            showLoginPage();
+        }
+    });
 }
 
-function loginData() {
-    // todo: sessionstorage da, eğer orada bulamadıysan
+function showAppPage() {
+    $(".only-logged-out").hide();
+    $(".only-logged-in").show();
+    $(".page").hide();
+    $("#page-app").show();
+}
+
+function getLoginData() {
+    // sessionstorage da, eğer orada bulamadıysan
     // localstorage da kayıtlı login data yı json'dan object'e dönüştür ve yolla
     // eğer yoksa null yolla
+    var json = sessionStorage["login"] || localStorage["login"];
+    if (json) {
+        try {
+            return JSON.parse(json);
+        } catch (e) {
+            return null;
+        }
+    }
+
+}
+function showLoginPage() {
+    $(".only-logged-in").hide();
+    $(".only-logged-out").show();
+    $(".page").hide();
+    $("#page-login").show();
 }
 
 function success(message) {
@@ -100,15 +141,18 @@ $("#signinform").submit(function (event) {
 
         resetLoginForms();
         success("You have been logged in successfully. Redirecting...");
+        checkLogin();
 
-        setTimeout(function () { $("login").removeClass("d-flex").addClass("d-none"); }, 1000);
+        setTimeout(function () {
+            resetLoginForms();
+            showAppPage();
+        }, 1000);
+
     }).fail(function (xhr) {
         errorMessage(xhr.responseJSON.error_description);
     });
 
 });
-
-
 
 // https://getbootstrap.com/docs/4.0/components/navs/#events
 $('#login a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
@@ -118,10 +162,21 @@ $('#login a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
     resetLoginForms();
 });
 
-$(".navbar-login a").click(function () {
+$(".navbar-login a").click(function (event) {
+    event.preventDefault();
     var href = $(this).attr("href");
 
     //https://getbootstrap.com/docs/4.0/components/navs/#via-javascript
-    $('#pills-tab a[href="'+href+'"]').tab('show') // Select tab by name
+    $('#pills-tab a[href="' + href + '"]').tab('show') // Select tab by name
 
 });
+
+$("#btnLogout").click(function (event) {
+    event.preventDefault();
+    sessionStorage.removeItem["login"];
+    localStorage.removeItem["login"];
+    showLoginPage();
+});
+
+// ACTİONS
+checkLogin();
