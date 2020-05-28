@@ -1,5 +1,8 @@
 ﻿// GLOBAL VARİABLES
+
 var apiUrl = "https://localhost:44305/";
+var selectedNote = null;
+var selectedLink = null;
 
 //FUNCTİONS
 
@@ -14,7 +17,7 @@ function checkLogin() {
         return;
     }
     //Is Token valid?
-    ajax("api/Account/UserInfo", "GET",
+    ajax("api/Account/UserInfo", "GET",null,
         function (data) {
             showAppPage();
         },
@@ -29,7 +32,7 @@ function showAppPage() {
     $(".page").hide();
 
     // retrieve the notes
-    ajax("api/Notes/List", "GET",
+    ajax("api/Notes/List", "GET",null,
         function (data) {
             console.log(data);
 
@@ -123,14 +126,29 @@ function errorMessage(message) {
     }
 }
 
-function ajax(url, type, successFunc, errorFunc) {
+function ajax(url, type, data, successFunc, errorFunc) {
     $.ajax({
         url: apiUrl + url,
         type: type,
+        data: data,
         headers: getAuthorizationHeader(),
         success: successFunc,
         error: errorFunc
     });
+}
+
+function updateNote() {
+    ajax("api/Notes/Update/" + selectedNote.Id, "PUT",
+        { Id: selectedNote.Id, Title: $("#title").val(), Content: $("#content").val() },
+        function (data) {
+            selectedLink.note = data;
+            selectedLink.text = data.Title;
+            alert("Güncelleme Başarılı");
+        },
+        function (data) {
+
+        },
+    );
 }
 
 // EVENTS
@@ -211,9 +229,24 @@ $("#btnLogout").click(function (event) {
 
 $("body").on("click", ".show-note", function (event) {
     event.preventDefault();
-    var note = this.note;
-    $("#content").val(note.Content);
-    $("#title").val(note.Title);
+    selectedNote = this.note;
+    selectedLink = this;
+    $("#content").val(selectedNote.Content);
+    $("#title").val(selectedNote.Title);
+
+
+    $(".show-note").removeClass("active");
+    $(this).addClass("active");
+});
+
+$("#frmNote").submit(function (event) {
+    event.preventDefault();
+    if (!selectedNote) {
+        addNote();
+    }
+    else {
+        updateNote();
+    }
 });
 
 // ACTİONS
