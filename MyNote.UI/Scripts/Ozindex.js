@@ -9,30 +9,46 @@ function checkLogin() {
     // login değilse login/register sayfasını göster
     var loginData = getLoginData();
 
-    if (loginData == null || !loginData.access_token) {
+    if (!loginData || !loginData.access_token) {
         showLoginPage();
         return;
     }
-    //token'ı geçerli mi?
-    $.ajax({
-        url: apiUrl + "api/Account/UserInfo",
-        type: "Get",
-        headers: { Authorization: "Bearer "+ loginData.access_token },
-        success: function (data) {
-            console.log(data);
-            //showAppPage();
+    //Is Token valid?
+    ajax("api/Account/UserInfo", "GET",
+        function (data) {
+            showAppPage();
         },
-        error: function () {
+        function () {
             showLoginPage();
-        }
-    });
+        });
 }
 
 function showAppPage() {
     $(".only-logged-out").hide();
     $(".only-logged-in").show();
     $(".page").hide();
-    $("#page-app").show();
+
+    // retrieve the notes
+    ajax("api/Notes/List", "GET",
+        function (data) {
+            console.log(data);
+
+            $("#notes").html("");
+            for (var i = 0; i < data.length; i++) {
+                var a = $("<a/>")
+                    .attr("href","#")
+                    .addClass("list-group-item list-group-item-action show-note")
+                    .text(data[i].Title)
+                    .prop("note",data[i]);
+                $("#notes").append(a);    
+            }
+
+            //show page when it's ready..
+            $("#page-app").show();
+        },
+        function () {
+
+        });
 }
 
 function getLoginData() {
@@ -49,11 +65,16 @@ function getLoginData() {
     }
 
 }
+
 function showLoginPage() {
     $(".only-logged-in").hide();
     $(".only-logged-out").show();
     $(".page").hide();
     $("#page-login").show();
+}
+
+function getAuthorizationHeader() {
+    return { Authorization: "Bearer " + getLoginData().access_token };
 }
 
 function success(message) {
@@ -100,6 +121,16 @@ function errorMessage(message) {
             .text(message)
             .show();
     }
+}
+
+function ajax(url, type, successFunc, errorFunc) {
+    $.ajax({
+        url: apiUrl + url,
+        type: type,
+        headers: getAuthorizationHeader(),
+        success: successFunc,
+        error: errorFunc
+    });
 }
 
 // EVENTS
@@ -176,6 +207,13 @@ $("#btnLogout").click(function (event) {
     sessionStorage.removeItem["login"];
     localStorage.removeItem["login"];
     showLoginPage();
+});
+
+$("body").on("click", ".show-note", function (event) {
+    event.preventDefault();
+    var note = this.note;
+    $("#content").val(note.Content);
+    $("#title").val(note.Title);
 });
 
 // ACTİONS
