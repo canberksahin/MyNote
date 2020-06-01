@@ -1,6 +1,6 @@
 ﻿// GLOBAL VARİABLES
 
-var apiUrl = "https://localhost:44305/";
+var apiUrl = "https://note.canberksahin.xyz/";
 var selectedNote = null;
 var selectedLink = null;
 
