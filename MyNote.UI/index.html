@@ -1,10 +1,11 @@
 ﻿<!DOCTYPE html>
-<html class="h-100" ng-app="myApp" ng-controller="myCtrl">
+<html class="h-100" ng-app="myApp" ng-controller="mainController">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta charset="utf-8" />
     <title>My Notes</title>
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link href="Content/fontawesome-all.min.css" rel="stylesheet" />
     <link href="Content/style.css" rel="stylesheet" />
     <link href="Content/styles-angularjs.css" rel="stylesheet" />
@@ -18,7 +19,7 @@
 </head>
 <body class="h-100">
 
-    <div class="loading d-none">
+    <div class="loading " ng-show="isLoading">
         <div class="spinner-border" role="status">
             <span class="sr-only">Loading...</span>
         </div>

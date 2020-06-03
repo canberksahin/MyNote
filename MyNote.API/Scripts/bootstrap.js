@@ -78,7 +78,7 @@ if (typeof jQuery === 'undefined') {
 
 /* ========================================================================
  * Bootstrap: alert.js v3.4.1
- * https://getbootstrap.com/docs/3.4/javascript/#alerts
+ * https://getbootstrap.com/docs/3.4/javascript/#messages
  * ========================================================================
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
